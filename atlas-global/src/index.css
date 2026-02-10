@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #030712;
+  /* Very deep blue/black that matches the reference better */
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: transparent !important;
+}

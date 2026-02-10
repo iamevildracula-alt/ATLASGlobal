@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Energy Decision Layer (EDL)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app">
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="logo">EDL CORE</div>
+        <div class="nav-item active" data-view="view-overview">Operational Overview</div>
+        <div class="nav-item" data-view="view-map">Infrastructure Map</div>
+        <div class="nav-item" data-view="view-history">Historical Data</div>
+        <div class="nav-item" data-view="view-policy">Policy Engine</div>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <div id="view-overview" class="view-section">
+          <header>
+            <div>
+              <h1>Operational Overview</h1>
+              <p style="color: var(--text-dim)">Energy Intelligence Core - Decision Layer v1</p>
+            </div>
+            <div class="badge badge-success">System Nominal</div>
+          </header>
+
+          <div class="dashboard-grid">
+            <div class="metric-card">
+              <div class="metric-label">Current Demand</div>
+              <div class="metric-value" id="val-demand">-- MW</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Grid Availability</div>
+              <div class="metric-value" id="val-availability">-- %</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Carbon Forecast</div>
+              <div class="metric-value" id="val-carbon">-- t</div>
+            </div>
+          </div>
+
+          <div class="decision-panel">
+            <section class="main-recommendation fade-in">
+              <div class="card-title">
+                <span>Decision Recommendation</span>
+                <span id="conf-level" class="badge badge-success" style="margin: 0">Ready</span>
+              </div>
+
+              <div style="margin-bottom: 2rem">
+                <span id="rec-primary-factor" class="badge badge-warning"
+                  style="font-size: 0.7rem; margin-bottom: 0.5rem">Awaiting Input</span>
+                <h2 id="rec-title" style="margin-bottom: 0.5rem">Select a scenario to analyze...</h2>
+                <p id="rec-summary" style="color: var(--text-dim);">The decision engine will evaluate supply/demand
+                  trade-offs based on the active scenario.</p>
+              </div>
+
+              <div class="detail-grid"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem">
+                <div class="detail-section">
+                  <h4>Recommended Action</h4>
+                  <p id="rec-action" style="font-size: 1.1rem; font-weight: 600">--</p>
+                </div>
+                <div class="detail-section">
+                  <h4>Trade-offs Analysis</h4>
+                  <div id="rec-trade-offs" class="trade-offs">
+                    <span class="trade-off-tag">--</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
+                <div class="detail-section">
+                  <h4>Key Risks</h4>
+                  <ul id="rec-risks" style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-dim)">
+                    <li>--</li>
+                  </ul>
+                </div>
+                <div class="detail-section">
+                  <h4>Alternatives Considered</h4>
+                  <div id="rec-alternatives" class="alternatives-list">
+                    <!-- Injected JS -->
+                  </div>
+                </div>
+              </div>
+
+            </section>
+
+            <section class="metric-card">
+              <div class="card-title">What-If Scenarios</div>
+              <div class="scenario-list" id="scenario-list">
+                <!-- Scenarios will be injected here -->
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div id="view-map" class="view-section" style="display: none; height: 100%; flex-direction: column;">
+          <header style="margin-bottom: 1rem;">
+            <h1>Infrastructure Map</h1>
+            <p style="color: var(--text-dim)">Real-time Topological Grid View</p>
+          </header>
+          <div id="network-map-container"
+            style="flex: 1; border-radius: 12px; overflow: hidden; background: #1a1a1a; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+            <!-- Canvas injected here -->
+          </div>
+        </div>
+
+        <div id="view-history" class="view-section" style="display: none;">
+          <header>
+            <h1>Historical Data</h1>
+          </header>
+          <div id="history-chart-demand"
+            style="height: 300px; width: 100%; background: #1a1a1a; margin-top: 1rem; border-radius: 12px; position: relative;">
+          </div>
+          <div id="history-chart-carbon"
+            style="height: 200px; width: 100%; background: #1a1a1a; margin-top: 1rem; border-radius: 12px; position: relative;">
+          </div>
+        </div>
+
+        <div id="view-policy" class="view-section" style="display: none;">
+          <header>
+            <h1>Policy Engine</h1>
+          </header>
+          <div id="policy-editor-container" style="margin-top: 2rem; display: flex; justify-content: center;"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
