@@ -35,7 +35,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 from backend.api import decisions, scenarios, ingestion, infrastructure, history, policy, telemetry
 
-app = FastAPI(title="ATLASGlobal AI - Energy Decision Layer", lifespan=lifespan)
+app = FastAPI(title="ATLASGlobal AI - Sentient Grid API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

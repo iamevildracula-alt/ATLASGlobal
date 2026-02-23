@@ -1,26 +1,36 @@
-# Energy Decision Layer (EDL)
+# ATLASGlobal: The Sentient Grid Operating System
 
-EDL is a B2B decision intelligence system that sits above physical energy infrastructure. It provides simulations and ranked recommendations for energy operators without direct hardware control.
+**ATLASGlobal** is an enterprise-grade AI operating system built to orchestrate and defend critical energy infrastructure. We are evolving the power grid from a reactive "Smart Grid" into a proactive, mathematically verified **"Sentient Grid."** 
+
+The global energy sector is facing a crisis driven by four converging forces: volatile renewable generation, aging infrastructure vulnerabilities, decarbonization imperatives, and rapid geopolitical supply shocks. ATLASGlobal solves this by replacing fragile, static grid policies with a dynamic, 4-stage Artificial Intelligence pipeline.
+
+## The Architecture of Sentience
+
+ATLASGlobal operates continuously within a **Hybrid Digital Twin** environment, fusing physical grid telemetry (IEC 61850 / DNP3) with advanced AI paradigms verified for harsh, mission-critical deployment:
+
+1. **The Shield (Adversarial Robustness & PINNs)**: Before processing data, Physics-Informed Neural Networks ensure incoming SCADA signals adhere to Kirchhoff's laws and thermal physics, mathematically quarantining structural anomalies and cyber-spoofed data.
+2. **The Oracle (Probabilistic Forecasting)**: Transitioning beyond deterministic guesses, we utilize Continuous Bayesian Probabilistic Models to forecast volatile demand (EVs) and renewable generation, producing strict confidence intervals.
+3. **The Engine Room (Reinforcement Learning)**: Deep dispatch optimization replacing traditional Linear Programming. The AI simulates thousands of counterfactual scenarios instantly, balancing cost, carbon, and hardware degradation.
+4. **The Judge (Governance & Deep XAI)**: A continuous Multivariate Regression and Variance Decomposition layer. We don't just supply an answer; we generate cryptographic statistical proofs explaining exactly *why* an autonomous decision is safe for the grid.
 
 ## Project Structure
-- `backend/`: FastAPI service for logic, simulation, and decisions.
-- `frontend/`: Vite-based visual dashboard (Vanilla TS + CSS).
+- `backend/`: FastAPI service powering the Decision Engine, SCADA ingestion, physical grid physics models, and XAI Governance.
+- `frontend/`: Vite-based 3D Mission Control. A glassmorphism command center providing unified 1D (Schematic), 2D (GIS), and 3D (Substation) spatial intelligence.
 
-## Running the Application
+## Running the Mission Control
 
-### Backend
-1. Navigate to `backend/`.
-2. Install requirements: `pip install -r requirements.txt`.
-3. Run the server: `python -m uvicorn main:app --reload`.
+### Backend Engine
+```bash
+cd backend
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
 
-### Frontend
-1. Navigate to `frontend/`.
-2. Install dependencies: `npm install`.
-3. Run development server: `npm run dev`.
+### Frontend Digital Twin
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Core Logic
-The system uses a custom `DecisionEngine` and `EDLSimulator` to evaluate scenarios based on:
-- Cost
-- Reliability
-- Risk
-- Carbon Impact
+*Built to ensure global energy sovereignty and grid resilience.*
