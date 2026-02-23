@@ -5,12 +5,16 @@ interface DataPoint {
 }
 
 export class HistoryChart {
-    privatecontainer: HTMLElement;
+    private container: HTMLElement;
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private data: DataPoint[] = [];
     private label: string;
     private color: string;
+
+    public refresh() {
+        this.resize();
+    }
 
     constructor(containerId: string, label: string, color: string) {
         this.container = document.getElementById(containerId) as HTMLElement;

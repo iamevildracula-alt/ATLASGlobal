@@ -4,7 +4,7 @@ import { Activity, Cpu, Zap } from 'lucide-react';
 
 export function Simulation() {
     return (
-        <section className="space-y-8">
+        <section id="simulation" className="space-y-8 scroll-mt-20">
             <div className="flex flex-col md:flex-row justify-between items-end border-b border-light-gray/10 pb-4">
                 <div>
                     <h2 className="text-3xl font-bold mb-2">Antigravity OS: Live BSR-220 Orchestration</h2>
@@ -26,23 +26,35 @@ export function Simulation() {
                 transition={{ duration: 0.8 }}
                 className="relative aspect-video w-full bg-black/50 border border-light-gray/20 rounded-lg overflow-hidden backdrop-blur-sm group"
             >
-                {/* Placeholder for Video - Replace with actual YouTube embed later */}
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black to-deep-space/50">
-                    <div className="text-center p-8 border border-neon-cyan/30 bg-black/80 backdrop-blur-md rounded-xl">
-                        <p className="text-neon-cyan font-mono mb-4 text-lg">SYSTEM SIMULATION OFFLINE</p>
-                        <p className="text-light-gray text-sm max-w-md">
-                            Video feed connecting to secure server...
-                            <br />
-                            [INSERT_YOUR_VIDEO_LINK_HERE]
-                        </p>
-                    </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+                    <iframe
+                        src="https://drive.google.com/file/d/1psit8CmzDRe_RVnns0m0cStex6ynqjR9/preview"
+                        className="w-full h-full border-none z-0"
+                        allow="autoplay; fullscreen"
+                        allowFullScreen
+                        title="Antigravity OS Simulation"
+                    />
 
-                    {/* Decorative UI elements for the "Control Screen" look */}
-                    <div className="absolute top-4 left-4 w-32 h-32 border-l border-t border-neon-cyan/50 rounded-tl-lg" />
-                    <div className="absolute bottom-4 right-4 w-32 h-32 border-r border-b border-neon-cyan/50 rounded-br-lg" />
-                    <div className="absolute top-1/2 left-4 w-1 h-12 bg-neon-cyan/30" />
-                    <div className="absolute top-1/2 right-4 w-1 h-12 bg-neon-cyan/30" />
+                    {/* Security Layer - Decorative only, must not block iframe */}
+                    <div className="absolute inset-0 pointer-events-none border border-neon-cyan/20 rounded-lg z-10" />
+
+                    {/* Fallback link if iframe is blocked by browser privacy settings */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 px-4 py-2 rounded-full border border-neon-cyan/30 z-20">
+                        <a
+                            href="https://drive.google.com/file/d/1psit8CmzDRe_RVnns0m0cStex6ynqjR9/view?usp=sharing"
+                            target="_blank"
+                            className="text-neon-cyan text-xs font-mono hover:underline"
+                        >
+                            EXTERNAL VIDEO FEED ➜
+                        </a>
+                    </div>
                 </div>
+
+                {/* Decorative UI elements for the "Control Screen" look */}
+                <div className="absolute top-4 left-4 w-32 h-32 border-l border-t border-neon-cyan/50 rounded-tl-lg pointer-events-none" />
+                <div className="absolute bottom-4 right-4 w-32 h-32 border-r border-b border-neon-cyan/50 rounded-br-lg pointer-events-none" />
+                <div className="absolute top-1/2 left-4 w-1 h-12 bg-neon-cyan/30 pointer-events-none" />
+                <div className="absolute top-1/2 right-4 w-1 h-12 bg-neon-cyan/30 pointer-events-none" />
             </motion.div>
         </section>
     );

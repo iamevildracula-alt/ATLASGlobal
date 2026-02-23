@@ -23,17 +23,38 @@ export function Hero() {
                     Replacing "blind" legacy infrastructure with a predictive Decision & Control Layer for SMRs and Industrial Power.
                 </p>
 
-                <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="group relative px-8 py-4 bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan font-bold tracking-wide overflow-hidden hover:bg-neon-cyan/20 transition-all duration-300">
+                <div className="flex flex-wrap gap-4 pt-4 relative" style={{ zIndex: 1000 }}>
+                    <a
+                        href="#simulation"
+                        className="group relative px-8 py-4 bg-neon-cyan/30 border-2 border-neon-cyan text-neon-cyan font-bold tracking-wide overflow-hidden hover:bg-neon-cyan/40 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+                        style={{ pointerEvents: 'auto', position: 'relative', zIndex: 1001 }}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            console.log('VIEW SIMULATION clicked');
+                            const target = document.getElementById('simulation');
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }}
+                    >
                         <span className="relative z-10 flex items-center gap-2">
                             VIEW SIMULATION <ArrowRight size={18} />
                         </span>
                         <div className="absolute inset-0 bg-neon-cyan/10 transform -skew-x-12 translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-                    </button>
+                    </a>
 
-                    <button className="px-8 py-4 border border-light-gray/30 text-light-gray hover:text-white hover:border-white transition-colors duration-300 flex items-center gap-2">
+                    <a
+                        href="https://docs.google.com/document/d/1pbKEerI7vuI88doSnE25u-PKT5OPvOshu1_tA6K5PCw/edit?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-8 py-4 border-2 border-light-gray/50 text-light-gray hover:text-white hover:border-white hover:bg-white/10 transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+                        style={{ pointerEvents: 'auto', position: 'relative', zIndex: 1001 }}
+                        onClick={(e) => {
+                            console.log('READ TECHNICAL BRIEF clicked - URL:', e.currentTarget.href);
+                        }}
+                    >
                         <FileText size={18} /> READ TECHNICAL BRIEF
-                    </button>
+                    </a>
                 </div>
             </motion.div>
         </section>

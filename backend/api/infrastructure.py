@@ -1,26 +1,38 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from ..models.infrastructure import GridTopology, GridNode, GridLink, NodeType, NodeStatus, LinkStatus
+from sqlalchemy.orm import Session
+from ..db.database import get_db
+from ..db.repository import GridRepository
 
 router = APIRouter()
 
-# Mock Data
-MOCK_NODES = [
-    GridNode(id="n1", name="Solar Farm Alpha", type=NodeType.GENERATOR, capacity_mw=150, location_x=10, location_y=20, status=NodeStatus.ONLINE),
-    GridNode(id="n2", name="Wind Park Beta", type=NodeType.GENERATOR, capacity_mw=200, location_x=80, location_y=15, status=NodeStatus.ONLINE),
-    GridNode(id="n3", name="Thermal Plant Gamma", type=NodeType.GENERATOR, capacity_mw=500, location_x=20, location_y=80, status=NodeStatus.ONLINE),
-    GridNode(id="n4", name="Main City Substation", type=NodeType.LOAD, capacity_mw=0, location_x=50, location_y=50, status=NodeStatus.ONLINE),
-    GridNode(id="n5", name="Industrial Zone", type=NodeType.LOAD, capacity_mw=0, location_x=70, location_y=70, status=NodeStatus.ONLINE),
-    GridNode(id="n6", name="Grid Battery Storage", type=NodeType.STORAGE, capacity_mw=100, location_x=40, location_y=40, status=NodeStatus.ONLINE),
-]
-
-MOCK_LINKS = [
-    GridLink(id="l1", source_id="n1", target_id="n4", capacity_mw=200, current_load_mw=120),
-    GridLink(id="l2", source_id="n2", target_id="n4", capacity_mw=250, current_load_mw=180),
-    GridLink(id="l3", source_id="n3", target_id="n4", capacity_mw=600, current_load_mw=400),
-    GridLink(id="l4", source_id="n4", target_id="n5", capacity_mw=400, current_load_mw=300),
-    GridLink(id="l5", source_id="n6", target_id="n4", capacity_mw=100, current_load_mw=0),
-]
-
 @router.get("/topology", response_model=GridTopology)
-async def get_topology():
-    return GridTopology(nodes=MOCK_NODES, links=MOCK_LINKS)
+async def get_topology(db: Session = Depends(get_db)):
+    repo = GridRepository(db)
+    data = repo.get_topology()
+    
+    # Map DB models to Pydantic schemas
+    nodes = [
+        GridNode(
+            id=n.id, 
+            name=n.name, 
+            type=n.type, 
+            capacity_mw=n.capacity_mw, 
+            location_x=n.location_x, 
+            location_y=n.location_y, 
+            status=n.status
+        ) for n in data["nodes"]
+    ]
+    
+    links = [
+        GridLink(
+            id=l.id, 
+            source_id=l.source_id, 
+            target_id=l.target_id, 
+            capacity_mw=l.capacity_mw, 
+            current_load_mw=l.current_load_mw, 
+            status=l.status
+        ) for l in data["links"]
+    ]
+    
+    return GridTopology(nodes=nodes, links=links)

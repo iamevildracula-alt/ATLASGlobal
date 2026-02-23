@@ -25,6 +25,10 @@ export class NetworkMap {
     private nodes: Node[] = [];
     private links: Link[] = [];
 
+    public refresh() {
+        this.resize();
+    }
+
     constructor(containerId: string) {
         this.container = document.getElementById(containerId) as HTMLElement;
         if (!this.container) throw new Error(`Container ${containerId} not found`);
@@ -96,6 +100,7 @@ export class NetworkMap {
             case 'generator': color = '#ffd43b'; break; // Yellow
             case 'load': color = '#ced4da'; break; // Gray
             case 'storage': color = '#51cf66'; break; // Green
+            case 'nuclear': color = '#8b5cf6'; break; // Purple
         }
 
         this.ctx.fillStyle = color;

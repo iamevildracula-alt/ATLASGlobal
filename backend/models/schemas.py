@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 from enum import Enum
+from .infrastructure import GridNode, GridLink
 
 class EnergyType(str, Enum):
     SOLAR = "solar"
@@ -20,12 +21,27 @@ class EnergyDemand(BaseModel):
     hour: int
     demand_mw: float
 
+class MarketPrice(BaseModel):
+    timestamp: str
+    price_per_mwh: float
+    currency: str = "USD"
+    region: str = "GLOBAL"
+
+class WeatherData(BaseModel):
+    timestamp: str
+    temperature: float  # Celsius
+    wind_speed: float    # m/s
+    irradiance: float    # W/m2
+    condition: str       # 'sunny', 'cloudy', 'stormy', etc.
+
 class InfrastructureState(BaseModel):
     sources: List[EnergySource]
     storage_capacity_mwh: float
     current_storage_mwh: float
     reliability_threshold: float = 0.99
     carbon_limit: Optional[float] = None
+    nodes: List[GridNode] = []
+    links: List[GridLink] = []
 
 class ScenarioType(str, Enum):
     DEMAND_SPIKE = "demand_spike"
@@ -64,3 +80,4 @@ class DecisionOutput(BaseModel):
     confidence_level: float
     next_steps: List[str]
     primary_factor: str # The main driver for this decision
+    rationale: Optional[str] = None # Natural language explanation of physics/safety factors

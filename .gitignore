@@ -59,3 +59,20 @@ Thumbs.db
 # Energy Infra simulation caches or temp files
 *.tmp
 temp/
+
+# Confidential & Research Materials
+MATERIAL/
+*.pdf
+book_*.txt
+*.csv
+GEMINI.*
+*.db
+
+# Internal Plans & Documents
+Architecture.md
+Mastertask.md
+MasterImplementation.md
+WeeklyTask.md
+POSTread.md
+DEMO_STORYBOARD.md
+extract_pdfs.py

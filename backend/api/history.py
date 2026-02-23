@@ -1,41 +1,41 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from ..models.history import HistoryResponse, TimeSeriesPoint
-from datetime import datetime, timedelta
-import random
+from ..db.database import get_db
+from ..db.repository import GridRepository
+from sqlalchemy.orm import Session
+from typing import List
+from datetime import datetime
 
 router = APIRouter()
 
-def generate_mock_history(days: int = 30) -> List[TimeSeriesPoint]:
-    data = []
-    base_time = datetime.now() - timedelta(days=days)
-    for i in range(days * 24): # Hourly data
-        t = base_time + timedelta(hours=i)
-        
-        # Simple seasonality
-        hour = t.hour
-        demand_base = 300 + (100 * (1 if 9 <= hour <= 18 else 0.5))
-        demand = demand_base + random.uniform(-20, 20)
-        
-        supply = demand * 1.05 # Margin
-        carbon = 40 + (20 * (1 if 9 <= hour <= 16 else 0)) # Solar reduces carbon? No, solar reduces intensity. Let's say random.
-        
-        data.append(TimeSeriesPoint(
-            timestamp=t,
-            demand_mw=round(demand, 1),
-            supply_total_mw=round(supply, 1),
-            carbon_intensity=round(carbon, 1),
-            reliability_score=round(random.uniform(0.95, 1.0), 3)
-        ))
-    return data
-
-MOCK_HISTORY = generate_mock_history()
-
 @router.get("/series", response_model=HistoryResponse)
-async def get_history(days: int = 30):
-    # Slice appropriate range
-    # For now just return full mock
+async def get_history(limit: int = 100, db: Session = Depends(get_db)):
+    repo = GridRepository(db)
+    history_models = repo.get_history(limit=limit)
+    
+    if not history_models:
+        return HistoryResponse(
+            start_date=datetime.now(),
+            end_date=datetime.now(),
+            data=[]
+        )
+    
+    # Map DB models to Schema points
+    points = [
+        TimeSeriesPoint(
+            timestamp=m.timestamp,
+            demand_mw=m.demand_mw,
+            supply_total_mw=m.supply_mw,
+            carbon_intensity=m.carbon_intensity,
+            reliability_score=m.reliability_score
+        ) for m in history_models
+    ]
+    
+    # Sort for chrono order (DB returns desc)
+    points.sort(key=lambda x: x.timestamp)
+    
     return HistoryResponse(
-        start_date=MOCK_HISTORY[0].timestamp,
-        end_date=MOCK_HISTORY[-1].timestamp,
-        data=MOCK_HISTORY
+        start_date=points[0].timestamp,
+        end_date=points[-1].timestamp,
+        data=points
     )
