@@ -37,7 +37,25 @@ async def lifespan(app: FastAPI):
                     "is_verified": True
                 })
                 
-                # 3. Simulate a live SCADA telemetry tick going through L2 Shield
+                # 3. Handle Grid Availability and Carbon (L1 Real Metadata)
+                availability = 0.98 + random.uniform(-0.02, 0.02)
+                carbon = 35.0 + random.uniform(-5, 5)
+                
+                await broadcaster.broadcast({
+                    "type": "telemetry",
+                    "data_type": "grid_availability",
+                    "value": round(availability * 100, 1),
+                    "is_verified": True
+                })
+                
+                await broadcaster.broadcast({
+                    "type": "telemetry",
+                    "data_type": "carbon_intensity",
+                    "value": round(carbon, 1),
+                    "is_verified": True
+                })
+                
+                # 4. Simulate a live SCADA telemetry tick going through L2 Shield
                 # (Normally this comes from POST /scada/push, but we simulate a live stream here)
                 from backend.core.data_validator import validator
                 raw_val = 450.0 + random.uniform(-10, 10)

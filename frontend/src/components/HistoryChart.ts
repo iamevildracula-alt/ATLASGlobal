@@ -43,6 +43,15 @@ export class HistoryChart {
         this.draw();
     }
 
+    public addDataPoint(point: DataPoint) {
+        this.data.push(point);
+        // Keep a reasonable historical buffer (e.g., last 100 points)
+        if (this.data.length > 100) {
+            this.data.shift();
+        }
+        this.draw();
+    }
+
     private draw() {
         const w = this.canvas.width;
         const h = this.canvas.height;

@@ -26,7 +26,7 @@ async function fetchMetrics() {
         if (availEl) availEl.innerText = `${data.availability * 100}%`;
 
         const carbonEl = document.getElementById('val-carbon');
-        if (carbonEl) carbonEl.innerText = `42.5 t`; // Mock
+        if (carbonEl) carbonEl.innerText = `${data.carbon_intensity || 35.5} t`;
     } catch (e) {
         console.error('Failed to fetch metrics', e);
     }
@@ -61,9 +61,23 @@ function initTelemetryWebSocket() {
 }
 
 function updateUIWithTelemetry(data: any) {
+    const timestamp = new Date().toISOString();
+
     if (data.data_type === 'demand_mw') {
         const el = document.getElementById('val-demand');
         if (el) el.innerText = `${data.value.toFixed(1)} MW`;
+        if (historyChartDemand && typeof data.value === 'number') {
+            historyChartDemand.addDataPoint({ timestamp, value: data.value });
+        }
+    } else if (data.data_type === 'grid_availability') {
+        const el = document.getElementById('val-availability');
+        if (el) el.innerText = `${data.value.toFixed(1)}%`;
+    } else if (data.data_type === 'carbon_intensity') {
+        const el = document.getElementById('val-carbon');
+        if (el) el.innerText = `${data.value.toFixed(1)} t`;
+        if (historyChartCarbon) {
+            historyChartCarbon.addDataPoint({ timestamp, value: data.value });
+        }
     } else if (data.data_type === 'status') {
         fetchMetrics(); // Force full refresh on status change
     }

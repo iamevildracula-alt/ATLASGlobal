@@ -88,7 +88,8 @@ async def get_current_metrics(db: Session = Depends(get_db)):
     return {
         "current_demand": round(current_demand, 1),
         "availability": round(availability, 3),
-        "renewables_ratio": 0.42 # Mock
+        "carbon_intensity": 35.5, # Baseline
+        "renewables_ratio": 0.42
     }
 
 @router.get("/weather")
