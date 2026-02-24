@@ -63,61 +63,48 @@
           <div class="decision-panel">
             <section class="main-recommendation fade-in">
               <div class="card-title">
-                <span>Decision Recommendation</span>
-                <span id="conf-level" class="badge badge-success" style="margin: 0">Ready</span>
+                <span>Real-Time Intelligence Feed</span>
+                <span id="sync-status" class="badge badge-success" style="margin: 0">Synced</span>
               </div>
 
               <div style="margin-bottom: 2rem">
-                <span id="rec-primary-factor" class="badge badge-warning"
-                  style="font-size: 0.7rem; margin-bottom: 0.5rem">Awaiting Input</span>
-                <h2 id="rec-title" style="margin-bottom: 0.5rem">Select a scenario to analyze...</h2>
-                <p id="rec-summary" style="color: var(--text-dim);">The decision engine will evaluate supply/demand
-                  trade-offs based on the active scenario.</p>
-                <div id="rec-rationale-container"
-                  style="margin-top: 1rem; padding: 0.75rem; background: rgba(0, 212, 255, 0.05); border-left: 3px solid var(--primary); border-radius: 4px; display: none;">
+                <span id="feed-status-badge" class="badge badge-warning"
+                  style="font-size: 0.7rem; margin-bottom: 0.5rem">Awaiting Data Streams</span>
+                <h2 id="feed-title" style="margin-bottom: 0.5rem">Connecting to Grid Sensors...</h2>
+                <p id="feed-summary" style="color: var(--text-dim);">The Sentient Grid is actively pulling Layer 1
+                  Contextual Data (Weather, Market, SCADA).</p>
+                <div id="l2-shield-container"
+                  style="margin-top: 1rem; padding: 0.75rem; background: rgba(0, 255, 128, 0.05); border-left: 3px solid #51cf66; border-radius: 4px;">
                   <div
-                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); font-weight: 700; margin-bottom: 0.25rem;">
-                    AI Rationale</div>
-                  <p id="rec-rationale" style="font-size: 0.85rem; color: #fff; line-height: 1.4; margin: 0;"></p>
+                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #51cf66; font-weight: 700; margin-bottom: 0.25rem;">
+                    L2 Shield Status</div>
+                  <p id="l2-shield-status" style="font-size: 0.85rem; color: #fff; line-height: 1.4; margin: 0;">
+                    Monitoring for Adversarial Perturbations & Data Drift...</p>
                 </div>
               </div>
 
               <div class="detail-grid"
                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem">
                 <div class="detail-section">
-                  <h4>Recommended Action</h4>
-                  <p id="rec-action" style="font-size: 1.1rem; font-weight: 600">--</p>
+                  <h4>Weather Context (L1)</h4>
+                  <div id="live-weather-feed" style="font-size: 1.1rem; font-weight: 600">--</div>
                 </div>
                 <div class="detail-section">
-                  <h4>Trade-offs Analysis</h4>
-                  <div id="rec-trade-offs" class="trade-offs">
-                    <span class="trade-off-tag">--</span>
+                  <h4>Market Pricing (L1)</h4>
+                  <div id="live-market-feed" style="font-size: 1.1rem; font-weight: 600">--</div>
+                </div>
+              </div>
+
+              <div class="detail-grid" style="display: grid; grid-template-columns: 1fr; gap: 2rem">
+                <div class="detail-section">
+                  <h4>Live Telemetry Stream</h4>
+                  <div id="live-telemetry-log"
+                    style="background: #111; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #4dabf7; height: 120px; overflow-y: auto; display: flex; flex-direction: column-reverse;">
+                    <!-- Injected JS Logs -->
                   </div>
                 </div>
               </div>
 
-              <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
-                <div class="detail-section">
-                  <h4>Key Risks</h4>
-                  <ul id="rec-risks" style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-dim)">
-                    <li>--</li>
-                  </ul>
-                </div>
-                <div class="detail-section">
-                  <h4>Alternatives Considered</h4>
-                  <div id="rec-alternatives" class="alternatives-list">
-                    <!-- Injected JS -->
-                  </div>
-                </div>
-              </div>
-
-            </section>
-
-            <section class="metric-card">
-              <div class="card-title">What-If Scenarios</div>
-              <div class="scenario-list" id="scenario-list">
-                <!-- Scenarios will be injected here -->
-              </div>
             </section>
           </div>
         </div>

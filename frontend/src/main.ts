@@ -68,132 +68,44 @@ function updateUIWithTelemetry(data: any) {
         fetchMetrics(); // Force full refresh on status change
     }
 
+    // Update Live Telemetry Log
+    const logEl = document.getElementById('live-telemetry-log');
+    if (logEl) {
+        const timeStr = new Date().toLocaleTimeString();
+        let logMsg = `[${timeStr}] SYNC: ${JSON.stringify(data)}`;
+
+        // If it's a Weather or Market packet, update specific UI cards too
+        if (data.data_type === 'weather') {
+            const weatherEl = document.getElementById('live-weather-feed');
+            if (weatherEl) weatherEl.innerHTML = `Temp: ${data.temp_c}°C<br>Wind: ${data.wind_kph}km/h`;
+            logMsg = `[${timeStr}] L1 INGEST (WEATHER): ${data.temp_c}°C, ${data.condition}`;
+        } else if (data.data_type === 'market') {
+            const marketEl = document.getElementById('live-market-feed');
+            if (marketEl) marketEl.innerHTML = `$${data.price_mwh}/MWh<br>Grid: ${data.region}`;
+            logMsg = `[${timeStr}] L1 INGEST (MARKET): $${data.price_mwh}/MWh`;
+        }
+
+        const newLog = document.createElement('div');
+        newLog.innerText = logMsg;
+        if (data.is_verified === false) {
+            newLog.style.color = '#ff4d4d'; // Red for adversarial/drift blocks
+        }
+
+        logEl.prepend(newLog);
+
+        // Keep log bounded
+        if (logEl.children.length > 50) {
+            logEl.removeChild(logEl.lastChild as Node);
+        }
+    }
+
     // Update map if available
     if (networkMap) {
         // networkMap.updateTelemetry(data); // Future enhancement
     }
 }
 
-async function fetchScenarios() {
-    try {
-        const response = await fetch(`${API_BASE}/scenarios/`);
-        const scenarios = await response.json();
-        const list = document.getElementById('scenario-list');
-        if (!list) return;
-
-        list.innerHTML = '';
-
-        scenarios.forEach((s: any) => {
-            const btn = document.createElement('button');
-            btn.className = 'scenario-btn';
-            btn.innerHTML = `
-                <div style="font-weight: 600">${s.type.replace('_', ' ').toUpperCase()}</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim)">${s.description}</div>
-            `;
-            btn.onclick = () => runDecision(s, btn);
-            list.appendChild(btn);
-        });
-    } catch (e) {
-        console.error('Failed to fetch scenarios', e);
-    }
-}
-
-async function runDecision(scenario: any, btn: HTMLElement) {
-    // UI update
-    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const titleEl = document.getElementById('rec-title');
-    if (titleEl) titleEl.innerText = 'Analyzing Infrastructure Data...';
-
-    try {
-        const response = await fetch(`${API_BASE}/decisions/run`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(scenario)
-        });
-        const decision = await response.json();
-
-        // Update Recommendation Header
-        if (titleEl) titleEl.innerText = decision.summary;
-
-        const actionEl = document.getElementById('rec-action');
-        if (actionEl) actionEl.innerText = decision.recommended_action;
-
-        // Primary Factor
-        const factorEl = document.getElementById('rec-primary-factor');
-        if (factorEl) {
-            factorEl.innerText = `Driver: ${decision.primary_factor}`;
-            factorEl.className = 'badge badge-warning';
-        }
-
-        // Trade-offs
-        const tradeOffsEl = document.getElementById('rec-trade-offs');
-        if (tradeOffsEl) {
-            tradeOffsEl.innerHTML = '';
-
-            const pFactor = decision.primary_factor;
-            let fakeTradeOffs: any[] = [];
-            if (pFactor.includes('Reliability')) {
-                fakeTradeOffs.push({ aspect: 'Reliability', impact: 'Low', desc: 'Secure' });
-                fakeTradeOffs.push({ aspect: 'Cost', impact: 'High', desc: 'Premium' });
-            } else if (pFactor.includes('Cost')) {
-                fakeTradeOffs.push({ aspect: 'Cost', impact: 'Low', desc: 'Optimized' });
-                fakeTradeOffs.push({ aspect: 'Reliability', impact: 'Medium', desc: 'Standard' });
-            } else {
-                fakeTradeOffs.push({ aspect: 'Carbon', impact: 'Low', desc: 'Green' });
-                fakeTradeOffs.push({ aspect: 'Cost', impact: 'Medium', desc: 'Standard' });
-            }
-
-            tradeOffsEl.innerHTML = fakeTradeOffs.map(t =>
-                `<span class="trade-off-tag impact-${t.impact}">${t.aspect}: ${t.impact}</span>`
-            ).join('');
-        }
-
-        // Risks
-        const risksList = document.getElementById('rec-risks');
-        if (risksList) {
-            risksList.innerHTML = decision.risks.map((r: string) => `<li>${r}</li>`).join('');
-        }
-
-        // Alternatives
-        const altList = document.getElementById('rec-alternatives');
-        if (altList) {
-            altList.innerHTML = decision.alternatives.map((alt: any) => `
-                <div class="alternative-item">
-                    <div style="font-weight: 600; font-size: 0.9rem">${alt.option_name}</div>
-                    <div style="display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
-                       <span>Cost: $${Math.round(alt.cost_impact / 1000)}k</span>
-                       <span>Rel: ${(alt.reliability_score * 100).toFixed(1)}%</span>
-                       <span>CO2: ${Math.round(alt.carbon_impact)}t</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        const confBadge = document.getElementById('conf-level');
-        if (confBadge) {
-            confBadge.innerText = `Confidence: ${Math.round(decision.confidence_level * 100)}%`;
-            confBadge.className = `badge ${decision.confidence_level > 0.8 ? 'badge-success' : 'badge-warning'}`;
-        }
-
-        // --- Explainability Bridge: AI Rationale ---
-        const rationaleEl = document.getElementById('rec-rationale');
-        const rationaleContainer = document.getElementById('rec-rationale-container');
-        if (rationaleEl && rationaleContainer) {
-            if (decision.rationale) {
-                rationaleEl.innerText = decision.rationale;
-                rationaleContainer.style.display = 'block';
-            } else {
-                rationaleContainer.style.display = 'none';
-            }
-        }
-
-    } catch (e) {
-        console.error('Failed to run decision', e);
-        if (titleEl) titleEl.innerText = 'Analysis Failed';
-    }
-}
+// Scenario Logic Removed - Sentient Grid now relies entirely on Live Real-Time Ingestion (L1)
 
 // Navigation
 function initNavigation() {
@@ -347,7 +259,6 @@ async function initHistory() {
 // Initial Load
 window.addEventListener('load', () => {
     fetchMetrics();
-    fetchScenarios();
     initNavigation();
     initTelemetryWebSocket();
 });
