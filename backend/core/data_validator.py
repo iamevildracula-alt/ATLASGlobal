@@ -7,7 +7,7 @@ class AdversarialFilter:
     Detects physically impossible data patterns indicative of cyber spoofing
     or critical sensor failure.
     """
-    def __init__(self, max_rate_of_change_mw_per_sec: float = 50.0):
+    def __init__(self, max_rate_of_change_mw_per_sec: float = 500.0):
         self.max_roc = max_rate_of_change_mw_per_sec
         self.last_valid_state: Dict[str, float] = {}
         self.last_timestamp: datetime = None
@@ -128,3 +128,19 @@ class DataValidator:
         processed_packet["shield_flags"] = flags
         
         return processed_packet
+
+    def validate_measurement(self, asset_id: str, value: float) -> Dict[str, Any]:
+        """ Wrapper for ingestion/main loops """
+        packet = self.process_telemetry({
+            "asset_id": asset_id,
+            "value_mw": value,
+            "timestamp": datetime.utcnow()
+        })
+        return {
+            "is_valid": packet["is_verified"],
+            "credibility_score": packet["credibility_score"],
+            "flags": packet["shield_flags"]
+        }
+
+# Global instance for backend routes
+validator = DataValidator()

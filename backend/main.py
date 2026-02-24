@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
                 
                 # 3. Handle Grid Availability and Carbon (L1 Real Metadata)
                 availability = 0.98 + random.uniform(-0.02, 0.02)
-                carbon = 35.0 + random.uniform(-5, 5)
+                real_carbon = await context_bridge.get_real_carbon_intensity()
                 
                 await broadcaster.broadcast({
                     "type": "telemetry",
@@ -51,26 +51,22 @@ async def lifespan(app: FastAPI):
                 await broadcaster.broadcast({
                     "type": "telemetry",
                     "data_type": "carbon_intensity",
-                    "value": round(carbon, 1),
+                    "value": round(real_carbon, 1),
                     "is_verified": True
                 })
                 
-                # 4. Simulate a live SCADA telemetry tick going through L2 Shield
-                # (Normally this comes from POST /scada/push, but we simulate a live stream here)
+                # 4. Handle Real Grid Demand
+                real_demand = await context_bridge.get_real_grid_demand()
                 from backend.core.data_validator import validator
-                raw_val = 450.0 + random.uniform(-10, 10)
                 
-                # Introduce a random adversarial attack/drift 5% of the time to show Shield working
-                if random.random() < 0.05:
-                    raw_val += 500.0  # Massive impossible jump
-                    
-                val_res = validator.validate_measurement("sub_main", raw_val)
+                # Still run through L2 Shield for validation tracking
+                val_res = validator.validate_measurement("main_grid_feed", real_demand)
                 
                 await broadcaster.broadcast({
                     "type": "telemetry",
                     "data_type": "demand_mw",
-                    "asset": "sub_main",
-                    "value": round(raw_val, 1) if val_res['is_valid'] else "BLOCK",
+                    "asset": "main_grid_feed",
+                    "value": round(real_demand, 1) if val_res['is_valid'] else "BLOCK",
                     "is_verified": val_res["is_valid"],
                     "credibility": val_res['credibility_score'],
                     "flags": val_res['flags']
